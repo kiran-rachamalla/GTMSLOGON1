@@ -1,0 +1,41 @@
+button:focus {
+			outline-color: black;
+		}
+th {
+            background: burlywood;
+            border: 2px solid black;
+        }
+
+        .clickable {
+            height: 50px;
+            background: white;
+            border: 2px solid black;
+            color:red;
+        }
+
+        .clickable:hover {
+            background: red;
+            color:red;
+        }
+td {
+text-align:center;
+ background: white;
+ border: 2px solid black;
+}
+.input-group {
+ position:relative;
+ left:60%;
+ }
+
+ .table-dark {
+ color:Black;
+ }
+ .systems-list .card-header{
+ display:flex;
+ justify-content:space-between;
+
+ }
+ .systems-list .title{
+
+ min-width:95%;
+ }

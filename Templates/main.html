@@ -1,0 +1,113 @@
+{% extends 'baseTemplate.html' %}
+
+{% block body %}
+<nav class="navbar navbar-expand-lg bg-info navbar-dark">
+    <h6 style="width: 20%;">GTMS LOGON</h6>
+    <span class="border border-success"></span>
+    <div class="systems_type">
+				<select name="s_type" id="s_type" onchange="show_system(this.value)">
+					<option value="">All</option>
+					<option value="D">Development</option>
+					<option value="S">Stage</option>
+					<option value="P">Production</option>
+				</select>
+			</div>
+    <div class="input-group">
+        <div class="form-outline">
+            <input id="search-input" type="search" id="form1"
+                   class="form-control" placeholder="Search systems"
+                    onkeyup="myFunction()" oninput="myFunction()" />
+        </div>
+    </div>
+</nav>
+<div id="accordion" class="systems-list">
+    {% for dict_item in the_content %}
+    <div class="card">
+        <div class="card-header collapsed card-link">
+            <div data-toggle="collapse" class="title"
+                 data-target="#{{dict_item['INFOCUS']['SYSTEM_ID']}}">
+                <b class="header-title float-left">
+                    {{dict_item['INFOCUS']['SYSTEM_ID']}}
+                    <span style="background-color: #006aff; display: inline-grid;
+					width: 25px;color: white; border-radius: 30%;"> <center>D</center> </span>
+                </b>
+            </div>
+            <div class="toolbar">
+                <button class="sample_{{dict_item['INFOCUS']['SYSTEM_ID']}}" value={{dict_item['INFOCUS']['SYSTEM_ID']}} >
+<!--                    <img src="{{url_for('static', filename='sapgui.png')}}">-->
+                    <img src="{{url_for('static', filename='Images/sapLogon.png')}}" height="20px" width="20px">
+                </button>
+<!--                 {% if dict_item['INFOCUS']['GCLOUD'] == true : %}-->
+<!--                                    <button class="server_{{dict_item['INFOCUS']['SYSTEM_ID']}}" value={{dict_item['INFOCUS']['SYSTEM_ID']}} >-->
+<!--                    <img src="{{url_for('static', filename='Images/server_run-512.webp')}}" height="20px" width="20px">-->
+<!--                </button>-->
+<!--                                    {% endif %}-->
+                 {% if dict_item['INFOCUS']['GCLOUD'] == true : %}
+                <button class="stop_server_{{dict_item['INFOCUS']['SYSTEM_ID']}}" value={{dict_item['INFOCUS']['SYSTEM_ID']}} >
+                    <img src="{{url_for('static', filename='Images/stop_server.png')}}" height="20px" width="20px">
+                </button>
+                                    {% endif %}
+            </div>
+        </div>
+        <div id="{{dict_item['INFOCUS']['SYSTEM_ID']}}" class="collapse" data-parent="#accordion">
+            <div class="card-body">
+                <table class="table table-dark ">
+                    <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Description</th>
+                        <th>Credentials</th>
+                        <th>Comments</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for client in dict_item['INFOCUS']['CUST_INFO'] %}
+                    <tr>
+                        <td><a href="{{client['VBURL']}}" target="_blank">{{client['CLIENT']}}</a></td>
+                        <td>{{client['CUST_DESCR']}}</td>
+                        {% set username = dict_item['INFOCUS']['SYSTEM_ID'] +","+ client['CLIENT'] + ",username" ', '%}
+                        {% set password = dict_item['INFOCUS']['SYSTEM_ID'] +","+ client['CLIENT'] + ",password" ', '%}
+                        {% set comment = dict_item['INFOCUS']['SYSTEM_ID'] +","+ client['CLIENT'] + ",comment" ', '%}
+                        {% set button = dict_item['INFOCUS']['SYSTEM_ID'] +"_"+ client['CLIENT'] + "_button" ','%}
+                        <td><input type="text" placeholder="Username" id={{username}}
+                                        value = {{ Username_get(dict_item['INFOCUS']['SYSTEM_ID'],client['CLIENT']) }}>
+                          <button class="cls-button" type="submit">
+                              <img src="{{url_for('static', filename='Images/copy.png')}}"
+											height="20px" width="20px" title="Copy" id="{{username}}_userimage"
+                                   onclick="myFunction_copy(this)" onmouseover="myMouseover(this)"
+												onmouseout="myMouseout(this)"/>
+								    </button></br>
+                        <input type="password" placeholder="Password" id={{password}}
+                                        value = {{ password_get(dict_item['INFOCUS']['SYSTEM_ID'],client['CLIENT']) }}>
+                         <button class="cls-button" type="submit"><img src="{{url_for('static', filename='Images/copy.png')}}"
+											height="20px" width="20px" title="Copy" id="{{password}}_pass"onclick="myFunction_copy(this)" onmouseover="myMouseover(this)"
+												onmouseout="myMouseout(this)"></button></td>
+								<td>
+									<textarea id={{comment}} cols="40" rows="2" placeholder="Note..">{{ comment_get(dict_item['INFOCUS']['SYSTEM_ID'],client['CLIENT']) }}</textarea></td>
+                                    <td> <button class="client_save_{{button}}">
+									<img src="{{url_for('static', filename='Images/save.jpg')}}" height="20px" width="20px" title="Save"
+										onmouseover="myMouseover1(this)" onmouseout="myMouseout1(this)"/>
+									</button>
+                                    <button class="sample_{{dict_item['INFOCUS']['SYSTEM_ID']}}" value={{dict_item['INFOCUS']['SYSTEM_ID']}} >
+                    <img src="{{url_for('static', filename='Images/sapLogon.png')}}" height="20px" width="20px">
+                </button>
+                                {% if dict_item['INFOCUS']['GCLOUD'] == true : %}
+                                    <button class="server_{{dict_item['INFOCUS']['SYSTEM_ID']}}" value={{dict_item['INFOCUS']['SYSTEM_ID']}} >
+                    <img src="{{url_for('static', filename='Images/server_run-512.webp')}}" height="20px" width="20px">
+                </button>
+                                    {% endif %}
+                                    </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<input type="hidden" name="GUI_ADDRESS" id="GUI_ADDRESS" value="10.1.180.14">
+<!--<button id="sample" value="10.1.180.14" >bac</button>-->
+<div class="container"></div>
+{% endblock %}
